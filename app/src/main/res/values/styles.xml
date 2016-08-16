@@ -8,14 +8,45 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="TextButtonCircular" parent="android:style/Widget.Holo.Button">
-        <item name="android:background">@drawable/text_button_circular</item>
+    <style name="BlueButtonCircular" parent="android:style/Widget.Holo.Button">
+        <item name="android:background">@drawable/blue_button_circular</item>
+        <item name="android:layout_margin">3dp</item>
+    </style>
+
+    <style name="RedButtonCircular" parent="android:style/Widget.Holo.Button">
+        <item name="android:background">@drawable/red_button_circular</item>
+        <item name="android:layout_margin">3dp</item>
+    </style>
+
+    <style name="GreenButtonCircular" parent="android:style/Widget.Holo.Button">
+        <item name="android:background">@drawable/green_button_circular</item>
         <item name="android:layout_margin">3dp</item>
     </style>
 
     <style name="TextButtonRectangular" parent="android:style/Widget.Holo.Button">
-        <item name="android:background">@drawable/text_button_rectangular</item>
+        <item name="android:background">@drawable/blue_button_rectangular</item>
         <item name="android:layout_margin">3dp</item>
+    </style>
+
+    <style name="BlueButtonRectangular" parent="android:style/Widget.Holo.Button">
+        <item name="android:background">@drawable/blue_button_rectangular</item>
+        <item name="android:layout_margin">3dp</item>
+    </style>
+
+    <style name="RedButtonRectangular" parent="android:style/Widget.Holo.Button">
+        <item name="android:background">@drawable/red_button_rectangular</item>
+        <item name="android:layout_margin">3dp</item>
+    </style>
+
+    <style name="GreenButtonRectangular" parent="android:style/Widget.Holo.Button">
+        <item name="android:background">@drawable/green_button_rectangular</item>
+        <item name="android:layout_margin">3dp</item>
+    </style>
+
+    <style name="LightBlueButtonPill" parent="android:style/Widget.Holo.Button">
+        <item name="android:background">@drawable/light_blue_button_pill</item>
+        <item name="android:layout_margin">3dp</item>
+        <item name="android:textColor">@color/colorPrimaryDark</item>
     </style>
 
 </resources>

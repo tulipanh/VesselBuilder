@@ -1,13 +1,16 @@
 package com.tulipan.hunter.vesselbuilder;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -18,12 +21,13 @@ import java.util.ArrayList;
 public class ViewPageFragment extends Fragment {
     private VesselBuilderActivity mCurrentActivity;
     private ModelManager mModelManager;
+    private FileHolder mSelectedFile;
+    private FileInterface mFileInterface;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mCurrentActivity = (VesselBuilderActivity) getActivity();
-
         mModelManager = new ModelManager(mCurrentActivity);
     }
 
@@ -37,20 +41,82 @@ public class ViewPageFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(mCurrentActivity, LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(new FileAdapter(mModelManager.getModels()));
 
+        mFileInterface = new FileInterface(v);
+
         return v;
     }
 
+    private class FileInterface implements View.OnClickListener {
+        private View mView;
+
+        private LinearLayout fileButtonsLayout;
+        private Button previewButton;
+        private Button openButton;
+        private Button deleteButton;
+
+        public FileInterface(View view) {
+            mView = view;
+
+            fileButtonsLayout = (LinearLayout) view.findViewById(R.id.files_buttons_layout);
+            previewButton = (Button) view.findViewById(R.id.files_preview_button);
+            openButton = (Button) view.findViewById(R.id.files_open_button);
+            deleteButton = (Button) view.findViewById(R.id.files_delete_button);
+
+            previewButton.setOnClickListener(this);
+            openButton.setOnClickListener(this);
+            deleteButton.setOnClickListener(this);
+
+            previewButton.setEnabled(false);
+            openButton.setEnabled(false);
+            deleteButton.setEnabled(false);
+        }
+
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.files_preview_button:
+                    /**
+                     * Needs to make files_preview_layout visible and load the scaled
+                     * preview image into the ImageView inside the layout. The click
+                     * listener for the "X" button in that layout needs to be
+                     * defined somewhere too.
+                     */
+                    break;
+
+                case R.id.files_open_button:
+                    mCurrentActivity.replaceFragment(ModelRendererFragment.newInstance(mSelectedFile.getFile()));
+                    break;
+
+                case R.id.files_delete_button:
+                    /**
+                     * Needs to delete the file and its preview (if it exists) from the
+                     * OBJFiles folder in Downloads.
+                     */
+                    break;
+            }
+        }
+
+        public void setPreviewEnabled(boolean setValue) {
+            previewButton.setEnabled(setValue);
+        }
+
+        public void setOpenEnabled(boolean setValue) {
+            openButton.setEnabled(setValue);
+        }
+
+        public void setDeleteEnabled(boolean setValue) {
+            deleteButton.setEnabled(setValue);
+        }
+    }
+
     private class FileHolder extends RecyclerView.ViewHolder {
-        private Button mButton;
         private TextView mText;
         private ModelFile mModelFile;
+        private String mPreviewPath = null;
 
         public FileHolder(LayoutInflater inflater, ViewGroup container) {
             super(inflater.inflate(R.layout.files_list_item, container, false));
 
-            mButton = (Button) itemView.findViewById(R.id.files_list_item_button);
-            mButton.setText("Preview");
-            mButton.setEnabled(false);
             mText = (TextView) itemView.findViewById(R.id.files_list_item_text);
         }
 
@@ -58,22 +124,40 @@ public class ViewPageFragment extends Fragment {
             mModelFile = modelFile;
             mText.setText(modelFile.getName());
             if (mModelFile.getPreviewPath() != null) {
-                mButton.setEnabled(true);
-                mButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        /**
-                         * This needs to perform whatever actions occur to view the preview image.
-                         */
-                    }
-                });
+                mPreviewPath = mModelFile.getPreviewPath();
             }
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mCurrentActivity.replaceFragment(ModelRendererFragment.newInstance(mModelFile));
+                    if (v.isSelected()) {
+                        v.setSelected(false);
+
+                        mText.setTextColor(ContextCompat.getColor(mCurrentActivity, R.color.colorAccent));
+                        mText.setTextSize(15);
+
+                        mSelectedFile = null;
+
+                        mFileInterface.setDeleteEnabled(false);
+                        mFileInterface.setOpenEnabled(false);
+                        mFileInterface.setPreviewEnabled(false);
+                    } else {
+                        v.setSelected(true);
+
+                        mText.setTextColor(Color.WHITE);
+                        mText.setTextSize(20);
+
+                        mSelectedFile = FileHolder.this;
+
+                        mFileInterface.setDeleteEnabled(true);
+                        mFileInterface.setOpenEnabled(true);
+                        mFileInterface.setPreviewEnabled(mPreviewPath != null);
+                    }
                 }
             });
+        }
+
+        public ModelFile getFile() {
+            return mModelFile;
         }
     }
 

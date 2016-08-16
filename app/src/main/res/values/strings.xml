@@ -1,4 +1,10 @@
 <resources>
     <string name="app_name">VesselBuilder</string>
-    <string name="reset">Reset</string>
+    <string name="reset">RESET</string>
+    <string name="open">OPEN</string>
+    <string name="preview">PREVIEW</string>
+    <string name="delete">DELETE</string>
+    <string name="getimagestring">GET IMAGE FROM:</string>
+    <string name="camera">CAMERA</string>
+    <string name="gallery">GALLERY</string>
 </resources>

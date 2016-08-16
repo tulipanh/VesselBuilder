@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+TODO: Wrap this whole LinearLayout in a FrameLayout and place an Accept? button someone where on the screen which becomes visible once an image is selected.
+This button will take the user on to the Cropping fragment.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.tulipan.hunter.vesselbuilder.ProgressView
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        custom:progressLevel="1"
+        android:background="@color/colorOffWhite"/>
+
+    <ImageView
+        android:id="@+id/getpage_imageview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="@color/colorOffWhiteDark"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="0"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:background="@color/colorOffWhite">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/getimagestring"
+            android:layout_gravity="center_horizontal"
+            android:textSize="18dp"/>
+
+        <LinearLayout
+            android:id="@+id/getpage_buttons_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal">
+
+            <Button
+                android:id="@+id/getpage_gallery_button"
+                style="@style/LightBlueButtonPill"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/gallery" />
+
+            <Button
+                android:id="@+id/getpage_camera_button"
+                style="@style/LightBlueButtonPill"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/camera"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

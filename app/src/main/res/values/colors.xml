@@ -3,7 +3,13 @@
     <color name="colorPrimary">#063961</color>
     <color name="colorPrimaryDark">#082943</color>
     <color name="colorAccent">#7292AA</color>
+    <color name="colorOffWhiteDark">#D4dEE5</color>
+    <color name="colorOffWhite">#F0F4F6</color>
     <color name="colorTriadRed">#610639</color>
+    <color name="colorTriadRedDark">#430829</color>
     <color name="colorTriadGreen">#396106</color>
+    <color name="colorTriadGreenDark">#294308</color>
     <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="colorPrimaryDarkLowAlpha">#A0082943</color>
 </resources>

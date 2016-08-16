@@ -114,7 +114,7 @@ public class ModelRendererFragment extends Fragment {
 
         @Override
         public void onClick(View v) {
-            switch(v.getId()) {
+            switch (v.getId()) {
                 case R.id.renderer_zoom_in_button:
                     if (!mRenderer.zoomIn(0.3f)) Toast.makeText(mCurrentActivity, "Zoom Failed", Toast.LENGTH_SHORT).show();
                     break;
@@ -191,11 +191,11 @@ public class ModelRendererFragment extends Fragment {
                     break;
 
                 case R.id.renderer_x_rotate_c_button:
-                    if (!mRenderer.rotateModel(1f, 0f, 0f, 30f)) Toast.makeText(mCurrentActivity, "Rotation Failed", Toast.LENGTH_SHORT).show();
+                    if (!mRenderer.rotateModel(1f, 0f, 0f, -30f)) Toast.makeText(mCurrentActivity, "Rotation Failed", Toast.LENGTH_SHORT).show();
                     break;
 
                 case R.id.renderer_x_rotate_cc_button:
-                    if (!mRenderer.rotateModel(1f, 0f, 0f, -30f)) Toast.makeText(mCurrentActivity, "Rotation Failed", Toast.LENGTH_SHORT).show();
+                    if (!mRenderer.rotateModel(1f, 0f, 0f, 30f)) Toast.makeText(mCurrentActivity, "Rotation Failed", Toast.LENGTH_SHORT).show();
                     break;
 
                 case R.id.renderer_y_rotate_button:
@@ -207,11 +207,11 @@ public class ModelRendererFragment extends Fragment {
                     break;
 
                 case R.id.renderer_y_rotate_c_button:
-                    if (!mRenderer.rotateModel(0f, 1f, 0f, 30f)) Toast.makeText(mCurrentActivity, "Rotation Failed", Toast.LENGTH_SHORT).show();
+                    if (!mRenderer.rotateModel(0f, 1f, 0f, -30f)) Toast.makeText(mCurrentActivity, "Rotation Failed", Toast.LENGTH_SHORT).show();
                     break;
 
                 case R.id.renderer_y_rotate_cc_button:
-                    if (!mRenderer.rotateModel(0f, 1f, 0f, -30f)) Toast.makeText(mCurrentActivity, "Rotation Failed", Toast.LENGTH_SHORT).show();
+                    if (!mRenderer.rotateModel(0f, 1f, 0f, 30f)) Toast.makeText(mCurrentActivity, "Rotation Failed", Toast.LENGTH_SHORT).show();
                     break;
 
                 case R.id.renderer_z_rotate_button:
@@ -223,11 +223,11 @@ public class ModelRendererFragment extends Fragment {
                     break;
 
                 case R.id.renderer_z_rotate_c_button:
-                    if (!mRenderer.rotateModel(0f, 0f, 1f, 30f)) Toast.makeText(mCurrentActivity, "Rotation Failed", Toast.LENGTH_SHORT).show();
+                    if (!mRenderer.rotateModel(0f, 0f, 1f, -30f)) Toast.makeText(mCurrentActivity, "Rotation Failed", Toast.LENGTH_SHORT).show();
                     break;
 
                 case R.id.renderer_z_rotate_cc_button:
-                    if (!mRenderer.rotateModel(0f, 0f, 1f, -30f)) Toast.makeText(mCurrentActivity, "Rotation Failed", Toast.LENGTH_SHORT).show();
+                    if (!mRenderer.rotateModel(0f, 0f, 1f, 30f)) Toast.makeText(mCurrentActivity, "Rotation Failed", Toast.LENGTH_SHORT).show();
                     break;
             }
         }

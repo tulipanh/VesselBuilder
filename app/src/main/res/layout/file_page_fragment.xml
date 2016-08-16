@@ -1,17 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/black">
 
-    <!---<TextView
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:layout_gravity="top"
+        android:background="@color/black">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/view_files_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/files_buttons_layout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_margin="5dp">
+
+        <Button
+            style="@style/BlueButtonRectangular"
+            android:id="@+id/files_delete_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/delete"
+            android:padding="5dp"/>
+
+        <Button
+            style="@style/BlueButtonRectangular"
+            android:id="@+id/files_preview_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="5dp"
+            android:text="@string/preview" />
+
+        <Button
+            style="@style/BlueButtonRectangular"
+            android:id="@+id/files_open_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/open"
+            android:padding="5dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/files_preview_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="File Viewer!"/> -->
+        android:orientation="vertical"
+        android:layout_gravity="center_vertical"
+        android:visibility="gone">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/view_files_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        <ImageView
+            android:id="@+id/files_preview_imageview"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:layout_margin="5dp"
+            android:layout_gravity="center_vertical"/>
 
-</LinearLayout>
+        <Button
+            style="@style/RedButtonCircular"
+            android:id="@+id/files_preview_exit_button"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_gravity="center_horizontal"
+            android:text="X"/>
+
+    </LinearLayout>
+
+
+
+</FrameLayout>
