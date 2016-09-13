@@ -15,6 +15,9 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.tulipan.hunter.vesselbuilder.structures.ModelFile;
+import com.tulipan.hunter.vesselbuilder.structures.OBJModel;
+
 import java.io.File;
 
 /**

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorOffWhiteDark">
+
+    <com.tulipan.hunter.vesselbuilder.views.ProgressView
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        custom:progressLevel="3"
+        android:background="@color/colorOffWhite"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:padding="15dp"
+        android:background="@color/colorOffWhiteDark">
+
+        <FrameLayout
+            android:id="@+id/extract_drawlayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </FrameLayout>
+
+        <View
+            android:id="@+id/extractpage_shroud"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/colorOffWhiteDark"
+            android:alpha="0.6"
+            android:visibility="gone"/>
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:id="@+id/extractpage_edit_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="0"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:background="@color/colorOffWhite">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/traceedge"
+            android:layout_gravity="center_horizontal"
+            android:textSize="18dp"/>
+
+        <LinearLayout
+            android:id="@+id/extractpage_edit_buttons_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal">
+
+            <Button
+                android:id="@+id/extractpage_accept_button"
+                style="@style/LightBlueButtonPill"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/accept" />
+
+            <Button
+                android:id="@+id/extractpage_reject_button"
+                style="@style/LightBlueButtonPill"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/reject" />
+
+            <Button
+                android:id="@+id/extractpage_cont_button"
+                style="@style/LightBlueButtonPill"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/cont" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

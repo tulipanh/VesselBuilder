@@ -28,7 +28,7 @@
         android:layout_gravity="bottom"
         android:layout_margin="5dp">
 
-        <com.tulipan.hunter.vesselbuilder.AxesView
+        <com.tulipan.hunter.vesselbuilder.views.AxesView
             android:layout_width="90dp"
             android:layout_height="90dp"
             android:layout_gravity="center|bottom" />

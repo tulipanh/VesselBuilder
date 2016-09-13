@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorOffWhiteDark">
+
+    <com.tulipan.hunter.vesselbuilder.views.ProgressView
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        custom:progressLevel="2"
+        android:background="@color/colorOffWhite"/>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:padding="15dp"
+        android:background="@color/colorOffWhiteDark">
+
+        <FrameLayout
+            android:id="@+id/crop_drawlayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        </FrameLayout>
+
+    </FrameLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/croppage_buttons_layout"
+        android:visibility="visible"
+        style="?android:attr/buttonBarStyle">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/croppage_accept_button"
+            android:text="COMMIT"
+            android:textSize="12sp"
+            android:alpha="0.7"
+            style="?android:attr/buttonBarButtonStyle"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/croppage_reject_button"
+            android:text="REJECT"
+            android:textSize="12sp"
+            android:alpha="0.7"
+            style="?android:attr/buttonBarButtonStyle"/>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/croppage_reset_button"
+            android:text="RESET"
+            android:textSize="12sp"
+            android:alpha="0.7"
+            style="?android:attr/buttonBarButtonStyle"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/croppage_edit_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_weight="0"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:background="@color/colorOffWhite">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/editmode"
+            android:layout_gravity="center_horizontal"
+            android:textSize="18dp"/>
+
+        <LinearLayout
+            android:id="@+id/croppage_edit_buttons_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal">
+
+            <Button
+                android:id="@+id/croppage_crop_button"
+                style="@style/LightBlueButtonPill"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/crop" />
+
+            <Button
+                android:id="@+id/croppage_clean_button"
+                style="@style/LightBlueButtonPill"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/clean"/>
+
+            <Button
+                android:id="@+id/croppage_cont_button"
+                style="@style/LightBlueButtonPill"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/cont" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

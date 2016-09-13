@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/edge_manip_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".GLEdgeManipActivity">
+
+    <android.opengl.GLSurfaceView
+        android:id="@+id/gl_surface"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent" />
+
+    <com.tulipan.hunter.vesselbuilder.views.ProgressView
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        custom:progressLevel="4"
+        android:background="@color/colorOffWhiteDark"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center_horizontal|bottom"
+        android:background="@color/colorTransparent">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/alterpage_buttons_layout"
+            android:visibility="visible"
+            style="?android:attr/buttonBarStyle">
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/alterpage_trim_button"
+                android:text="TRIM"
+                android:textSize="12sp"
+                android:alpha="0.7"
+                android:textColor="@color/colorPrimary"
+                style="?android:attr/buttonBarButtonStyle"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/alterpage_rotate_button"
+                android:text="ROTATE"
+                android:textSize="12sp"
+                android:alpha="0.7"
+                android:textColor="@color/colorPrimary"
+                style="?android:attr/buttonBarButtonStyle"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/alterpage_translate_button"
+                android:text="TRANSLATE"
+                android:textSize="12sp"
+                android:alpha="0.7"
+                android:textColor="@color/colorPrimary"
+                style="?android:attr/buttonBarButtonStyle"/>
+
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/alterpage_export_button"
+                android:text="EXPORT"
+                android:textSize="12sp"
+                android:alpha="0.7"
+                android:textColor="@color/colorPrimary"
+                style="?android:attr/buttonBarButtonStyle"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/trim_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|bottom"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:paddingTop="5dp"
+            android:background="@color/colorOffWhiteDark">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/bottom"
+                    android:textColor="@color/colorPrimaryDark"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center">
+
+                    <Button
+                        android:id="@+id/untrim_bottom_button"
+                        style="@style/BlueButtonRectangular"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/plus" />
+
+                    <Button
+                        android:id="@+id/trim_bottom_button"
+                        style="@style/BlueButtonRectangular"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/minus" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="@string/top"
+                    android:textColor="@color/colorPrimaryDark"/>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center">
+
+                    <Button
+                        android:id="@+id/trim_top_button"
+                        style="@style/BlueButtonRectangular"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/minus" />
+
+                    <Button
+                        android:id="@+id/untrim_top_button"
+                        style="@style/BlueButtonRectangular"
+                        android:layout_width="50dp"
+                        android:layout_height="wrap_content"
+                        android:text="@string/plus" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/rotate_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"
+            android:paddingTop="5dp"
+            android:visibility="gone"
+            android:background="@color/colorOffWhiteDark">
+
+            <Button
+                android:id="@+id/rotate_counteronedeg_button"
+                style="@style/BlueButtonRectangular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/doubleleft"
+                android:layout_weight="1"
+                android:layout_gravity="center_horizontal" />
+
+            <Button
+                android:id="@+id/rotate_countertenthdeg_button"
+                style="@style/BlueButtonRectangular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/left"
+                android:layout_weight="1"
+                android:layout_gravity="center_horizontal" />
+
+            <Button
+                android:id="@+id/rotate_clocktenthdeg_button"
+                style="@style/BlueButtonRectangular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/right"
+                android:layout_weight="1"
+                android:layout_gravity="center_horizontal" />
+
+            <Button
+                android:id="@+id/rotate_clockonedeg_button"
+                style="@style/BlueButtonRectangular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/doubleright"
+                android:layout_weight="1"
+                android:layout_gravity="center_horizontal" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/translate_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal|bottom"
+            android:paddingTop="5dp"
+            android:visibility="gone"
+            android:background="@color/colorOffWhiteDark">
+
+            <Button
+                android:id="@+id/translate_lefttenth_button"
+                style="@style/BlueButtonRectangular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/doubleleft"
+                android:layout_gravity="center_horizontal" />
+
+            <Button
+                android:id="@+id/translate_lefthundredth_button"
+                style="@style/BlueButtonRectangular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/left"
+                android:layout_gravity="center_horizontal" />
+
+
+            <Button
+                android:id="@+id/translate_righthundredth_button"
+                style="@style/BlueButtonRectangular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/right"
+                android:layout_gravity="center_horizontal" />
+
+            <Button
+                android:id="@+id/translate_righttenth_button"
+                style="@style/BlueButtonRectangular"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/doubleright"
+                android:layout_gravity="center_horizontal" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</FrameLayout>

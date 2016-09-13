@@ -13,6 +13,9 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.tulipan.hunter.vesselbuilder.structures.ModelFile;
+import com.tulipan.hunter.vesselbuilder.structures.ModelManager;
+
 import java.util.ArrayList;
 
 /**

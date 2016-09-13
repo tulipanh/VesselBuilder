@@ -3,6 +3,8 @@ package com.tulipan.hunter.vesselbuilder;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 
+import com.tulipan.hunter.vesselbuilder.structures.OBJModel;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 

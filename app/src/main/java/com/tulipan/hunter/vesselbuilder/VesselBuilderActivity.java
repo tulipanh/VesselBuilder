@@ -9,10 +9,14 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.widget.Toast;
+
+import org.opencv.android.OpenCVLoader;
 
 public class VesselBuilderActivity extends FragmentActivity {
     public static final int REQUEST_WRITE_STORAGE = 100;
+    public static final String TAG = "VesselBuilderActivity";
     private static boolean mPermissionsGranted = false;
 
     @Override
@@ -29,6 +33,12 @@ public class VesselBuilderActivity extends FragmentActivity {
         }
 
         boolean permissions = checkPermissions(); // This is weird. I may need to split into two functions.
+
+        if (!OpenCVLoader.initDebug()) {
+            Log.e(this.getClass().getSimpleName(), " OpenCVLoader.initDebug(), not working.");
+        } else {
+            Log.d(this.getClass().getSimpleName(), " OpenCVLoader.initDevug(), working.");
+        }
     }
 
     @Override
