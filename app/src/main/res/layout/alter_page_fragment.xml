@@ -31,48 +31,35 @@
             android:orientation="horizontal"
             android:layout_gravity="center_horizontal"
             android:id="@+id/alterpage_buttons_layout"
-            android:visibility="visible"
-            style="?android:attr/buttonBarStyle">
+            android:visibility="visible">
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/alterpage_trim_button"
-                android:text="TRIM"
-                android:textSize="12sp"
-                android:alpha="0.7"
-                android:textColor="@color/colorPrimary"
-                style="?android:attr/buttonBarButtonStyle"/>
+                android:text="@string/trim_button"
+                style="@style/OptionsButton"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/alterpage_rotate_button"
-                android:text="ROTATE"
-                android:textSize="12sp"
-                android:alpha="0.7"
-                android:textColor="@color/colorPrimary"
-                style="?android:attr/buttonBarButtonStyle"/>
+                android:text="@string/rotate_button"
+                style="@style/OptionsButton"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/alterpage_translate_button"
-                android:text="TRANSLATE"
-                android:textSize="12sp"
-                android:alpha="0.7"
-                android:textColor="@color/colorPrimary"
-                style="?android:attr/buttonBarButtonStyle"/>
+                android:text="@string/translate_button"
+                style="@style/OptionsButton"/>
 
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/alterpage_export_button"
-                android:text="EXPORT"
-                android:textSize="12sp"
-                android:alpha="0.7"
-                android:textColor="@color/colorPrimary"
-                style="?android:attr/buttonBarButtonStyle"/>
+                android:text="@string/export_button"
+                style="@style/OptionsButton"/>
 
         </LinearLayout>
 

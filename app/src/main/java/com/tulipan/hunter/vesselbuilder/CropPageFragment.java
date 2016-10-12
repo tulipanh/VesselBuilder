@@ -124,18 +124,33 @@ public class CropPageFragment extends Fragment {
                     mDrawView.accept();
                     acceptButton.setEnabled(false);
                     rejectButton.setEnabled(false);
+                    mDrawView.setEditMode(DrawingView.NONE);
+                    cropButton.setEnabled(true);
+                    cropButton.setAlpha(1.0f);
+                    cleanButton.setEnabled(true);
+                    cleanButton.setAlpha(1.0f);
                     break;
 
                 case R.id.croppage_reject_button:
                     mDrawView.reject();
                     acceptButton.setEnabled(false);
                     rejectButton.setEnabled(false);
+                    mDrawView.setEditMode(DrawingView.NONE);
+                    cropButton.setEnabled(true);
+                    cropButton.setAlpha(1.0f);
+                    cleanButton.setEnabled(true);
+                    cleanButton.setAlpha(1.0f);
                     break;
 
                 case R.id.croppage_reset_button:
                     mDrawView.reset();
                     acceptButton.setEnabled(false);
                     rejectButton.setEnabled(false);
+                    mDrawView.setEditMode(DrawingView.NONE);
+                    cropButton.setEnabled(true);
+                    cropButton.setAlpha(1.0f);
+                    cleanButton.setEnabled(true);
+                    cleanButton.setAlpha(1.0f);
                     break;
 
                 case R.id.croppage_cont_button:

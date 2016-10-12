@@ -341,6 +341,7 @@ public class ExtractPageFragment extends Fragment {
             ArrayList<Point> whitePix;
             Point avgPoint;
             Path foundPath = new Path();
+            ArrayList<Point> missedTrace = new ArrayList<>();
 
             setShroud(true);
             mProcessing = true;
@@ -348,25 +349,44 @@ public class ExtractPageFragment extends Fragment {
             int vIdx = 0;
             int radius = (int)(25/mScale);
 
-            /* This is running in linear time wrt the size of tracePoints and in quadratic time wrt the search radius */
-            /* i.e. quite slowly */
             for (Point p : tracePoints) {
                 imageX = xImageConvert(p.x);
                 imageY = yImageConvert(p.y);
-                whitePix = findWhiteWithinRange2(imageX, imageY, radius);
-                whitePix.add(new Point(imageX, imageY));
-                sumX = 0;
-                sumY = 0;
-                for (Point w : whitePix) {
-                    sumX += w.x;
-                    sumY += w.y;
+                if (imageX >= 0 && imageX < mImageWidth && imageY >= 0 && imageY < mImageHeight) {
+                    whitePix = findWhiteWithinRange2(imageX, imageY, radius);
+                    if (whitePix.size() == 0) {
+                        if (vIdx >= 2) missedTrace.add(new Point(imageX, imageY));
+                    } else if (missedTrace.size() > 0) {
+                        Point forwardVector = new Point(imageX - mVertexArray[vIdx - 2], imageY - mVertexArray[vIdx - 1]);
+                        Point missedVector = new Point(missedTrace.get(0).x - mVertexArray[vIdx - 2], missedTrace.get(0).y - mVertexArray[vIdx - 1]);
+                        int dotProduct = missedVector.x * forwardVector.x + missedVector.y * forwardVector.y;
+                        float length = (float) (dotProduct / (Math.sqrt(forwardVector.x * forwardVector.x + forwardVector.y * forwardVector.y)));
+                        float proportion = (float) (length / (Math.sqrt(forwardVector.x * forwardVector.x + forwardVector.y * forwardVector.y)));
+                        Point newPoint = new Point((int) (mVertexArray[vIdx - 2] + proportion * forwardVector.x), (int) (mVertexArray[vIdx - 1] + proportion * forwardVector.y));
+                        Point correctionVector = new Point(newPoint.x - missedTrace.get(0).x, newPoint.y - missedTrace.get(0).y);
+                        for (Point m : missedTrace) {
+                            mVertexArray[vIdx] = m.x + correctionVector.x;
+                            mVertexArray[vIdx + 1] = m.y + correctionVector.y;
+                            vIdx += 2;
+                            if (foundPath.isEmpty()) foundPath.moveTo(xViewConvert(mVertexArray[vIdx - 2]), yViewConvert(mVertexArray[vIdx - 1]));
+                            else foundPath.lineTo(xViewConvert(mVertexArray[vIdx - 2]), yViewConvert(mVertexArray[vIdx - 1]));
+                        }
+                        missedTrace.clear();
+                    } else {
+                        sumX = 0;
+                        sumY = 0;
+                        for (Point w : whitePix) {
+                            sumX += w.x;
+                            sumY += w.y;
+                        }
+                        avgPoint = new Point(sumX / whitePix.size(), sumY / whitePix.size());
+                        mVertexArray[vIdx] = avgPoint.x;
+                        mVertexArray[vIdx + 1] = avgPoint.y;
+                        vIdx += 2;
+                        if (foundPath.isEmpty()) foundPath.moveTo(xViewConvert(avgPoint.x), yViewConvert(avgPoint.y));
+                        else foundPath.lineTo(xViewConvert(avgPoint.x), yViewConvert(avgPoint.y));
+                    }
                 }
-                avgPoint = new Point(sumX/whitePix.size(), sumY/whitePix.size());
-                mVertexArray[vIdx] = avgPoint.x;
-                mVertexArray[vIdx+1] = avgPoint.y;
-                vIdx += 2;
-                if (foundPath.isEmpty()) foundPath.moveTo(xViewConvert(avgPoint.x), yViewConvert(avgPoint.y));
-                else foundPath.lineTo(xViewConvert(avgPoint.x), yViewConvert(avgPoint.y));
             }
 
             selectPath = foundPath;
@@ -411,6 +431,17 @@ public class ExtractPageFragment extends Fragment {
             return whitePoints;
         }
 
+        /**
+            This only searches in the same row as the trace point, dramatically decreasing the time needed to find a good point.
+            However, this diminishes its efficacy, so that it will only work well with roughly vertical traces.
+            Any trace that is nearly horizontal would likely give bad results, though no errors. This could be remedied by
+            keeping track of direction in addition to location, and searching perpendicular to the direction of motion.
+            This would also unfortunately increase the computational complexity and lead to slower results.
+
+            Solution implemented that searches in the same column and the same row, i.e. in a big + sign.
+            Still needs to be tested to ensure accuracy/efficacy and efficiency.
+         */
+
         private ArrayList<Point> findWhiteWithinRange2(int x, int y, int range) {
             ArrayList<Point> whitePoints = new ArrayList<>();
 
@@ -420,174 +451,13 @@ public class ExtractPageFragment extends Fragment {
                 }
             }
 
+            for (int i = -range; i <= range; i++) {
+                if (y+i < mImageHeight && y+i >= 0 && x < mImageWidth && x >= 0 && mCleanImage.getPixel(x, y+i) > -8000000) {
+                    whitePoints.add(new Point(x, y+i));
+                }
+            }
+
             return whitePoints;
-        }
-
-        private void processTrace() {
-            mProcessing = true;
-            /** Select parts of the edge and perform actions to show which parts were selected and which were interpolated.
-             *  This will involve:
-             *      Using scale, xTrans, and yTrans to determine the upper and lower bounds of the trace when translated back into the full sized image space.
-             *      Searching the pixels of the full-size image in the range created by the upper and lower bounds and the width of the trace when translated back to the full-sized image space.
-             *      Picking the one that falls closest to the center of the trace in that row. OR
-             *      If there is no pixel in that row that falls in the trace, just using the center of the trace as your pixel-point.
-             *      Adding each point to an array for exporting to the next step.
-             *      Adding each point to the selectPath and interPath depending on how it was selected.
-             */
-
-            int cTop, cBottom;
-            if (startY < curY) {
-                cTop = Math.max(startY, imageTop);
-                cBottom = Math.min(curY, imageBottom);
-            } else {
-                cTop = Math.max(curY, imageTop);
-                cBottom = Math.min(startY, imageBottom);
-            }
-
-            cTop = (int) ((cTop - yTranslation) / mScale) + 1;
-            cBottom = (int) ((cBottom - yTranslation) / mScale) - 1;
-            int centerX = xImageConvert(tracePoints.get(0).x);
-            float centerSlope = (float) (xImageConvert(tracePoints.get(1).x) - centerX) / (float) (yImageConvert(tracePoints.get(1).y) - yImageConvert(tracePoints.get(0).y));
-            float slopeSum = 0;
-            int traceIndex = 1;
-            int whiteThreshold = -8000000;
-            int whiteFound;
-
-            int imageWidth = mCleanImage.getWidth();
-            int xIndex = 0;
-            int yIndex = 1;
-            boolean selectPathStarted = false;
-            boolean interPathStarted = false;
-            int whiteSum, whiteCount;
-
-            mVertexArray = new int[(cBottom-cTop)*2+2];
-            ArrayList<Integer> interPoints = new ArrayList<>();
-
-            /**
-             * This cannot yet deal with edges that double back on themselves.
-             * TODO: Try to think of how I could implement this.
-             */
-
-            tracePoints.add(new Point (0, 50000));
-            int halfWidth = (int) (25/mScale);
-
-            Collections.sort(tracePoints, new PointYComparator());
-
-            for (int i = cTop; i <= cBottom; i++) {
-                /* Initialize whiteFound to be -1 for each row search */
-                whiteFound = -1;
-                /* Search 25 pixels in either direction. */
-                whiteSum = 0;
-                whiteCount = 0;
-                for (int j = centerX-halfWidth; j <= centerX+halfWidth; j++) {
-                    /* If a white pixel is found, check if it is closer to the center than the previously found white pixel. */
-                    if (j < 0) j = 0;
-                    else if (j >= imageWidth) j = centerX+halfWidth+1;
-                    else if (mCleanImage.getPixel(j, i) > whiteThreshold) {
-                        whiteSum += j;
-                        whiteCount += 1;
-                    }
-                }
-                /* Update the interPath and selectPath so the edge can be drawn. */
-                if (whiteCount > 0) whiteFound = whiteSum/whiteCount;
-                if (whiteFound == -1) {
-                    mVertexArray[xIndex] = whiteFound;
-                    mVertexArray[yIndex] = i;
-                    interPoints.add(centerX);
-                    interPoints.add(i);
-                    /*
-                    if (!interPathStarted) {
-                        interPath.moveTo(xViewConvert(centerX), yViewConvert(i));
-                        interPathStarted = true;
-                    } else {
-                        interPath.lineTo(xViewConvert(centerX), yViewConvert(i));
-                    }
-                    */
-                    selectPath.moveTo(xViewConvert(centerX), yViewConvert(i));
-                    xIndex += 2;
-                    yIndex += 2;
-                } else {
-                    mVertexArray[xIndex] = whiteFound;
-                    mVertexArray[yIndex] = i;
-                    if (!selectPathStarted) {
-                        selectPath.moveTo(xViewConvert(whiteFound), yViewConvert(i));
-                        selectPathStarted = true;
-                    } else {
-                        selectPath.lineTo(xViewConvert(whiteFound), yViewConvert(i));
-                    }
-                    // interPath.moveTo(xViewConvert(whiteFound), yViewConvert(i));
-                    xIndex += 2;
-                    yIndex += 2;
-                }
-                if (centerSlope < 10 && centerSlope > -10) slopeSum += centerSlope;
-                if (slopeSum > 1 || slopeSum < -1) {
-                    centerX = centerX + (int)slopeSum;
-                    slopeSum -= (int)slopeSum;
-                }
-
-                if (yImageConvert(tracePoints.get(traceIndex).y) == i) {
-                    centerX = xImageConvert(tracePoints.get(traceIndex).x);
-                    if (traceIndex+1 < tracePoints.size()) {
-                        centerSlope = (float) (xImageConvert(tracePoints.get(traceIndex + 1).x) - centerX) / (float) (yImageConvert(tracePoints.get(traceIndex + 1).y) - yImageConvert(tracePoints.get(traceIndex).y));
-                        slopeSum = 0;
-                        traceIndex++;
-                    }
-                }
-                if (centerX < 0) centerX = 0;
-                else if (centerX > imageWidth) centerX = imageWidth;
-                if (centerSlope == 0.0) {
-                    centerSlope = 0.0f;
-                }
-            }
-
-            /* Interpolation */
-            xIndex = 0;
-            yIndex = 1;
-            int firstSelect, firstInter, lastSelect, lastInter, xValue, yValue;
-            int gapCount = 0;
-            float interScaleFactor, interSlope, selectSlope;
-            /* Need to work this out on paper. */
-            while (yIndex < mVertexArray.length) {
-                /* If we encounter a row with no white pixels */
-                if (mVertexArray[xIndex] == -1) {
-                    /* Note the last place where white pixels were found. */
-                    firstSelect = mVertexArray[xIndex-2];
-                    interPath.moveTo(xViewConvert(firstSelect), yViewConvert(mVertexArray[xIndex-1]));
-                    /* Note the point that was traced where now white pixels were found. */
-                    firstInter = interPoints.get(0);
-                    gapCount = 0;
-                    /* Search out how big the gap is. */
-                    for (int i = xIndex; i < mVertexArray.length && mVertexArray[i] == -1; i+=2) {
-                        gapCount += 2;
-                    }
-                    /* If trying to interpolate with the bottom edge as one end of the gap, just don't */
-                    if (xIndex + gapCount >= mVertexArray.length) break;
-                    /* Note the next place where white pixels were found */
-                    lastSelect = mVertexArray[xIndex+gapCount];
-                    /* Note the last place (for this gap) where white pixels were now found. */
-                    lastInter = interPoints.get(gapCount-2);
-                    /* Create a scaling factor with the goal of matching the ends of the gap to the places where the gap starts. */
-                    interSlope = (lastInter - firstInter) / ((gapCount-2)/2);
-                    selectSlope = (lastSelect - firstSelect) / ((gapCount+2)/2);
-                    interScaleFactor = selectSlope / interSlope;
-                    /* For all points in the gap apply the transformation to the trace points to match them to the existing points there the gap starts and ends. */
-                    for (int i = xIndex; i < xIndex + gapCount; i+=2) {
-                        xValue = interPoints.get(0);
-                        yValue = interPoints.get(1);
-                        xValue = (int) (firstSelect+selectSlope*(yValue-mVertexArray[yIndex]) + (xValue - firstInter+interSlope*(yValue-mVertexArray[yIndex])) * interScaleFactor);
-                        /* xValue = (Value of desired slopeline at this yValue) + (Difference between the traced xValue and the traced slopeline value) * (Scaling factor between the two slopelines) */
-                        mVertexArray[i] = xValue;
-                        interPath.lineTo(xViewConvert(mVertexArray[i]), yViewConvert(yValue));
-                        interPoints.remove(0);
-                        interPoints.remove(0);
-                    }
-                }
-                xIndex += 2;
-                yIndex += 2;
-            }
-            tracePath.reset();
-            mProcessing = false;
-            mDrawingEnabled = true;
         }
 
         private int xImageConvert(int x) {
@@ -630,7 +500,7 @@ public class ExtractPageFragment extends Fragment {
 
             ArrayList<Integer> thinnedArray = new ArrayList<>();
             /* Using a thinFactor of length/100 gives us 50 vertices */
-            int thinFactor = mVertexArray.length / 100;
+            int thinFactor = mVertexArray.length / 60;
             if (thinFactor % 2 != 0) thinFactor += 1;
             int xIndex = 0;
             int yIndex = 1;

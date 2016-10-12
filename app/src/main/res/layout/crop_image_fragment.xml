@@ -34,35 +34,28 @@
         android:orientation="horizontal"
         android:layout_gravity="center_horizontal"
         android:id="@+id/croppage_buttons_layout"
-        android:visibility="visible"
-        style="?android:attr/buttonBarStyle">
+        android:visibility="visible">
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/croppage_accept_button"
-            android:text="COMMIT"
-            android:textSize="12sp"
-            android:alpha="0.7"
-            style="?android:attr/buttonBarButtonStyle"/>
+            android:text="@string/commit"
+            style="@style/OptionsButton"/>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/croppage_reject_button"
-            android:text="REJECT"
-            android:textSize="12sp"
-            android:alpha="0.7"
-            style="?android:attr/buttonBarButtonStyle"/>
+            android:text="@string/reject"
+            style="@style/OptionsButton"/>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/croppage_reset_button"
-            android:text="RESET"
-            android:textSize="12sp"
-            android:alpha="0.7"
-            style="?android:attr/buttonBarButtonStyle"/>
+            android:text="@string/reset"
+            style="@style/OptionsButton"/>
 
     </LinearLayout>
 

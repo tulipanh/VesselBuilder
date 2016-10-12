@@ -16,4 +16,9 @@
     <color name="colorSelected">#32CD32</color>
     <color name="colorInterpolated">#CDCD32</color>
     <color name="colorTransparent">#00FFFFFF</color>
+    <color name="colorTransparentPressed">#60082943</color>
+    <color name="doubleSeekbarUpper">#063961</color>
+    <color name="doubleSeekbarLower">#063961</color>
+    <color name="doubleSeekbarBar">#7292AA</color>
+    <color name="doubleSeekbarHighlight">#60082943</color>
 </resources>

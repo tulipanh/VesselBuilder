@@ -16,8 +16,6 @@
         android:layout_gravity="right|center_vertical"
         android:paddingTop="80dp">
 
-
-
     </LinearLayout>
 
     <LinearLayout
@@ -217,6 +215,16 @@
         android:layout_width="60dp"
         android:layout_height="30dp"
         android:layout_margin="5dp"
+        android:layout_gravity="left"
         android:text="@string/reset"/>
+
+    <Button
+        android:id="@+id/renderer_home_button"
+        style="@style/TextButtonRectangular"
+        android:layout_width="60dp"
+        android:layout_height="30dp"
+        android:layout_margin="5dp"
+        android:layout_gravity="right"
+        android:text="@string/home" />
 
 </FrameLayout>

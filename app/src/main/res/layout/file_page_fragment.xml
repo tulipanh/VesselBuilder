@@ -62,7 +62,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_gravity="center_vertical"
-        android:visibility="gone">
+        android:visibility="gone"
+        android:background="@color/black">
 
         <ImageView
             android:id="@+id/files_preview_imageview"
@@ -80,7 +81,5 @@
             android:text="X"/>
 
     </LinearLayout>
-
-
 
 </FrameLayout>

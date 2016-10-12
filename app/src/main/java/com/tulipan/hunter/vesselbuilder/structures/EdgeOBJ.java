@@ -3,6 +3,7 @@ package com.tulipan.hunter.vesselbuilder.structures;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.media.MediaScannerConnection;
 import android.os.Environment;
 import android.support.v4.app.ActivityCompat;
@@ -14,7 +15,10 @@ import com.tulipan.hunter.vesselbuilder.AlterPageFragment;
 import com.tulipan.hunter.vesselbuilder.VesselBuilderActivity;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -32,6 +36,7 @@ public class EdgeOBJ {
     private String TAG = "EdgeOBJ";
     private File mFileDirectory;
     private File mObjectFile;
+    private File mPreviewFile;
     private float[] baseVertexArray;
     private float[] outputVertexData;
     private float[] outputNormalData;
@@ -50,7 +55,7 @@ public class EdgeOBJ {
      * Order of vertices and vertex normals, for instance.
      */
 
-    public EdgeOBJ(Context context, float[] edgeVertexData) {
+    public EdgeOBJ(Context context, float[] edgeVertexData, Bitmap previewImage) {
 
         baseVertexArray = edgeVertexData.clone();
         mContext = context;
@@ -63,8 +68,12 @@ public class EdgeOBJ {
         if (mFileDirectory.exists() && mFileDirectory.canWrite()) {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd_HHmmss");
             Date now = new Date();
-            String filename = "test" + formatter.format(now) + ".obj";
-            mObjectFile = new File(mFileDirectory.getAbsolutePath() + "/" + filename);
+            String nowstring = formatter.format(now);
+            String objectFilename = "model" + nowstring + ".obj";
+            String imageFilename = "model" + nowstring + ".jpeg";
+            mObjectFile = new File(mFileDirectory.getAbsolutePath() + "/" + objectFilename);
+            mPreviewFile = new File(mFileDirectory.getAbsolutePath() + "/" + imageFilename);
+
             try {
                 mObjectFile.createNewFile();
             } catch (Exception e) {
@@ -77,6 +86,7 @@ public class EdgeOBJ {
                 try {
                     outputStream = new FileOutputStream(mObjectFile);
                     writeMesh(outputStream);
+                    writePreview(previewImage);
                     MediaScannerConnection.scanFile(mContext, new String[] {mObjectFile.getAbsolutePath()}, null, null);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -92,7 +102,29 @@ public class EdgeOBJ {
                     }
                 }
             }
+
+
         }
+    }
+
+    private void writePreview(Bitmap previewImage) {
+        if (previewImage == null) return;
+
+        try {
+            OutputStream fOut = new FileOutputStream(mPreviewFile);
+            previewImage.compress(Bitmap.CompressFormat.JPEG, 100, fOut);
+            fOut.flush();
+            fOut.close();
+            MediaScannerConnection.scanFile(mContext, new String[]{mPreviewFile.getAbsolutePath()}, null, null);
+        } catch(FileNotFoundException e) {
+            Toast.makeText(mContext, "File Not Found", Toast.LENGTH_SHORT).show();
+        } catch(IOException e) {
+            Toast.makeText(mContext, "Output Stream Error", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public String getFilePath() {
+        return mObjectFile.getPath();
     }
 
     private void createVertices() {
@@ -108,6 +140,8 @@ public class EdgeOBJ {
          * 10-degree rotations around the y-axis 36 times.
          */
         float minX = baseVertexArray[0];
+        float minY = baseVertexArray[1];
+        float maxY = baseVertexArray[1];
         int index = 0;
         int indexO = 0;
         while (index < baseVertexArray.length) {
@@ -120,6 +154,8 @@ public class EdgeOBJ {
             outputVertexData[indexO+2] = vertexVector[2];
             indexO += 3;
             if (vertexVector[0] < minX) minX = vertexVector[0]; // Need the min X value to determine how thick the walls should be.
+            if (vertexVector[1] < minY) minY = vertexVector[1];
+            if (vertexVector[1] > maxY) maxY = vertexVector[1];
             for (int i = 0; i < 35; i++) {  // Apply a 10-degree rotation 35 times.
                 multiplyMV(rotatedVector, 0, rotMatrix, 0, vertexVector, 0);
                 outputVertexData[indexO] = rotatedVector[0];
@@ -146,7 +182,9 @@ public class EdgeOBJ {
          * So the lower the vertices are, the more they will be translated up, until the lowest
          * vertices will be translated the full thickness.
          */
+        // If the X-based thickness is disproportionately thick (greater than 5% of the vessel height) it gets set to 5% of vessel height
         float thickness = minX/7f;
+        if (thickness > 0.05f * (maxY-minY)) thickness = (0.05f * (maxY-minY));
         float transY = thickness/(baseVertexArray.length/2);
         int numY = 0;
 

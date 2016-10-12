@@ -31,7 +31,6 @@ public class ModelRendererFragment extends Fragment {
     private String mModelPath;
     private RotationInterface mRotationInterface;
     private ZoomInterface mZoomInterface;
-    private Button mResetButton;
 
     public static final String FILE_PATH = "filePath";
 
@@ -80,11 +79,19 @@ public class ModelRendererFragment extends Fragment {
             mRotationInterface = new RotationInterface(v, mRenderer);
             mZoomInterface = new ZoomInterface(v, mRenderer);
 
-            mResetButton = (Button) v.findViewById(R.id.renderer_reset_button);
-            mResetButton.setOnClickListener(new View.OnClickListener() {
+            Button resetButton = (Button) v.findViewById(R.id.renderer_reset_button);
+            resetButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     mRenderer.reset();
+                }
+            });
+
+            Button homeButton = (Button) v.findViewById(R.id.renderer_home_button);
+            homeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mCurrentActivity.clearFragmentStack();
                 }
             });
 

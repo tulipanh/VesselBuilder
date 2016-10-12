@@ -1,6 +1,8 @@
 package com.tulipan.hunter.vesselbuilder;
 
 import android.graphics.Color;
+import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -10,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -17,6 +20,8 @@ import com.tulipan.hunter.vesselbuilder.structures.ModelFile;
 import com.tulipan.hunter.vesselbuilder.structures.ModelManager;
 
 import java.util.ArrayList;
+
+import utils.PictureUtils;
 
 /**
  * Created by Hunter on 7/6/2016.
@@ -57,6 +62,9 @@ public class ViewPageFragment extends Fragment {
         private Button openButton;
         private Button deleteButton;
 
+        private LinearLayout previewLayout;
+        private ImageView previewImageView;
+
         public FileInterface(View view) {
             mView = view;
 
@@ -64,6 +72,9 @@ public class ViewPageFragment extends Fragment {
             previewButton = (Button) view.findViewById(R.id.files_preview_button);
             openButton = (Button) view.findViewById(R.id.files_open_button);
             deleteButton = (Button) view.findViewById(R.id.files_delete_button);
+
+            previewLayout = (LinearLayout) view.findViewById(R.id.files_preview_layout);
+            previewImageView = (ImageView) view.findViewById(R.id.files_preview_imageview);
 
             previewButton.setOnClickListener(this);
             openButton.setOnClickListener(this);
@@ -80,10 +91,14 @@ public class ViewPageFragment extends Fragment {
                 case R.id.files_preview_button:
                     /**
                      * Needs to make files_preview_layout visible and load the scaled
-                     * preview image into the ImageView inside the layout. The click
-                     * listener for the "X" button in that layout needs to be
-                     * defined somewhere too.
+                     * preview image into the ImageView inside the layout.
                      */
+                    if (previewLayout.getVisibility() == View.VISIBLE) {
+                        previewLayout.setVisibility(View.GONE);
+                    } else {
+                        previewImageView.setImageBitmap(PictureUtils.getScaledBitmap(mSelectedFile.getPreviewPath(), previewImageView));
+                        previewLayout.setVisibility(View.VISIBLE);
+                    }
                     break;
 
                 case R.id.files_open_button:
@@ -161,6 +176,10 @@ public class ViewPageFragment extends Fragment {
 
         public ModelFile getFile() {
             return mModelFile;
+        }
+
+        public String getPreviewPath() {
+            return mPreviewPath;
         }
     }
 

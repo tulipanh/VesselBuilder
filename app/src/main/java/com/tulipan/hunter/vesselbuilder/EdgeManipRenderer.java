@@ -132,6 +132,7 @@ public class EdgeManipRenderer implements GLSurfaceView.Renderer{
         edge = new Edge(context, mProject.getEdgeVertexArray()); // Test using pre-generated data, figure out how I want to import real data later.
         edge.makeVertexBuffer();
         edge.makeColorBuffer();
+        edge.makeBaselineBuffer();
         centerline = new Centerline(context);
         centerline.makeVertexBuffer();
         grid = new Gridpoints(context);
@@ -304,12 +305,12 @@ public class EdgeManipRenderer implements GLSurfaceView.Renderer{
          * Importing of attributes to the glsl program goes here.
          */
         edge.vertexBuffer.position(0);
-        glVertexAttribPointer(aPositionLocation, Edge.POSITION_COMPONENTS_PER_VERTEX, GL_FLOAT, false, edge.POSITION_STRIDE, edge.vertexBuffer);
+        glVertexAttribPointer(aPositionLocation, Edge.POSITION_COMPONENTS_PER_VERTEX, GL_FLOAT, false, Edge.POSITION_STRIDE, edge.vertexBuffer);
         glEnableVertexAttribArray(aPositionLocation);
         edge.vertexBuffer.position(0);
 
         edge.colorBuffer.position(0);
-        glVertexAttribPointer(aColorBoolLocation, Edge.COLORBOOL_COMPONENTS_PER_VERTEX, GL_FLOAT, false, edge.COLOR_STRIDE, edge.colorBuffer);
+        glVertexAttribPointer(aColorBoolLocation, Edge.COLORBOOL_COMPONENTS_PER_VERTEX, GL_FLOAT, false, Edge.COLOR_STRIDE, edge.colorBuffer);
         glEnableVertexAttribArray(aColorBoolLocation);
         edge.colorBuffer.position(0);
 
@@ -344,12 +345,26 @@ public class EdgeManipRenderer implements GLSurfaceView.Renderer{
         glDrawArrays(GL_LINES, 0, centerline.numVertices);
 
         /**
+         * Render the baseline.
+         */
+        glUniformMatrix4fv(uMatrixLocation, 1, false, projectionMatrix, 0);
+
+        edge.baselineBuffer.position(0);
+        glVertexAttribPointer(aPositionLocation, Edge.POSITION_COMPONENTS_PER_VERTEX, GL_FLOAT, false, Edge.TOTAL_STRIDE, edge.baselineBuffer);
+        glEnableVertexAttribArray(aPositionLocation);
+        edge.baselineBuffer.position(2);
+        glVertexAttribPointer(aColorBoolLocation, Edge.COLORBOOL_COMPONENTS_PER_VERTEX, GL_FLOAT, false, Edge.TOTAL_STRIDE, edge.baselineBuffer);
+        glEnableVertexAttribArray(aColorBoolLocation);
+        edge.baselineBuffer.position(0);
+
+        glDrawArrays(GL_LINES, 0, 2);
+
+        /**
          * Import new uniforms and attributes to render the grid.
          */
 
         glUniform4f(uGoodColorLocation, 1.0f, 1.0f, 1.0f, 0.5f);
         glUniform4f(uBadColorLocation, 0.0f, 1.0f, 1.0f, 1.0f);
-        glUniformMatrix4fv(uMatrixLocation, 1, false, projectionMatrix, 0);
 
         grid.vertexBuffer.position(0);
         glVertexAttribPointer(aPositionLocation, Gridpoints.POSITION_COMPONENTS_PER_VERTEX, GL_FLOAT, false, grid.STRIDE, grid.vertexBuffer);
@@ -386,6 +401,9 @@ public class EdgeManipRenderer implements GLSurfaceView.Renderer{
                 return true;
             }
         }
+        /**
+         * Needs to update the baseline data and buffer. Likely will use the bottomTrim information in edge.
+         */
     }
 
     public boolean rotateHandler(float angle) {
@@ -415,6 +433,9 @@ public class EdgeManipRenderer implements GLSurfaceView.Renderer{
                 return false;
             }
         }
+        /**
+         * Baseline shouldn't change, but we need to make sure that it is no rotated along with the rest of the shape.
+         */
     }
 
     public boolean translateHandler(float distance) {
@@ -444,6 +465,9 @@ public class EdgeManipRenderer implements GLSurfaceView.Renderer{
                 return false;
             }
         }
+        /**
+         * Baseline needs to be elongated by the translation distance.
+         */
     }
 
     public void trimData() {
@@ -520,8 +544,8 @@ public class EdgeManipRenderer implements GLSurfaceView.Renderer{
                     } else {
                         allowed = false;
                     }
-
-                    // mParentFragment.trimSuite.updateText(mPreviousTopTrim, mPreviousBottomTrim, allowed);
+                    edge.updateBaselineData(mEditMode, 0);
+                    edge.makeBaselineBuffer();
                     mParentFragment.requestRender();
                     break;
 
@@ -541,8 +565,9 @@ public class EdgeManipRenderer implements GLSurfaceView.Renderer{
 
                     float newAngle = mPreviousAngle + angleChange;
                     allowed = rotateHandler(newAngle);
+                    edge.updateBaselineData(mEditMode, 0);
+                    edge.makeBaselineBuffer();
                     mPreviousAngle = newAngle;
-                    // mParentFragment.rotateSuite.updateText(newAngle, allowed);
                     mParentFragment.requestRender();
                     break;
 
@@ -562,8 +587,9 @@ public class EdgeManipRenderer implements GLSurfaceView.Renderer{
 
                     float newDistance = mPreviousDistance + distanceChange;
                     allowed = translateHandler(newDistance);
+                    edge.updateBaselineData(mEditMode, dDistance);
+                    edge.makeBaselineBuffer();
                     mPreviousDistance = newDistance;
-                    // mParentFragment.translateSuite.updateText(newDistance, allowed);
                     mParentFragment.requestRender();
                     break;
 

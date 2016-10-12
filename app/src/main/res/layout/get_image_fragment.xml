@@ -1,156 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-TODO: Wrap this whole LinearLayout in a FrameLayout and place an Accept? button someone where on the screen which becomes visible once an image is selected.
-This button will take the user on to the Cropping fragment.
--->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:custom="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorOffWhiteDark">
+    android:background="@color/colorOffWhiteDark"
+    android:orientation="vertical">
 
     <com.tulipan.hunter.vesselbuilder.views.ProgressView
         android:layout_width="match_parent"
         android:layout_height="80dp"
-        custom:progressLevel="1"
-        android:background="@color/colorOffWhite"/>
+        android:background="@color/colorOffWhite"
+        custom:progressLevel="1" />
 
     <ImageView
         android:id="@+id/getpage_imageview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:background="@color/colorOffWhiteDark"/>
+        android:background="@color/colorOffWhiteDark" />
 
     <LinearLayout
+        android:id="@+id/getpage_normal_buttons_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
         android:layout_gravity="center_horizontal"
-        android:id="@+id/getpage_buttons_layout"
-        android:visibility="visible"
-        style="?android:attr/buttonBarStyle">
+        android:orientation="horizontal"
+        android:visibility="visible">
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/getpage_get_button"
-            android:text="GET"
-            android:textSize="12sp"
-            android:alpha="0.7"
-            style="?android:attr/buttonBarButtonStyle"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/getpage_filter_button"
-            android:text="FILTER"
-            android:textSize="12sp"
-            android:alpha="0.7"
-            style="?android:attr/buttonBarButtonStyle"/>
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/getpage_accept_button"
-            android:text="ACCEPT"
-            android:textSize="12sp"
-            android:alpha="0.7"
-            style="?android:attr/buttonBarButtonStyle"/>
-
-        <Button
+            style="@style/OptionsButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/getpage_reset_button"
-            android:text="RESET"
-            android:textSize="12sp"
-            android:alpha="0.7"
-            style="?android:attr/buttonBarButtonStyle"/>
+            android:layout_weight="1"
+            android:text="@string/accept"/>
+
+        <Button
+            android:id="@+id/getpage_reject_button"
+            style="@style/OptionsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/reject"/>
+
+        <Button
+            android:id="@+id/getpage_rotate_button"
+            style="@style/OptionsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/rotate_button"/>
+
+        <Button
+            android:id="@+id/getpage_reflect_button"
+            style="@style/OptionsButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/reflect"/>
 
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/getpage_filter_layout"
-        android:layout_width="match_parent"
+        android:id="@+id/getpage_filter_buttons_layout"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
         android:orientation="horizontal"
-        android:background="@color/colorOffWhite"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
         android:visibility="gone">
 
-        <LinearLayout
+        <Button
+            android:id="@+id/getpage_reset_button"
+            style="@style/OptionsButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1">
+            android:text="@string/reset"/>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/lowerthresh"
-                android:layout_gravity="center"/>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_gravity="center">
-
-                <Button
-                    android:id="@+id/getpage_lower_minus_button"
-                    style="@style/LightBlueButtonPill"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="-"/>
-
-                <Button
-                    android:id="@+id/getpage_lower_plus_button"
-                    style="@style/LightBlueButtonPill"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="+"/>
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
+        <Button
+            android:id="@+id/getpage_continue_button"
+            style="@style/OptionsButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_weight="1">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/upperthresh"
-                android:layout_gravity="center"/>
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_gravity="center">
-
-                <Button
-                    android:id="@+id/getpage_upper_minus_button"
-                    style="@style/LightBlueButtonPill"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="-"/>
-
-                <Button
-                    android:id="@+id/getpage_upper_plus_button"
-                    style="@style/LightBlueButtonPill"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="+"/>
-
-            </LinearLayout>
-
-        </LinearLayout>
+            android:text="@string/cont" />
 
     </LinearLayout>
 
@@ -158,25 +89,26 @@ This button will take the user on to the Cropping fragment.
         android:id="@+id/getpage_get_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_weight="0"
-        android:paddingTop="10dp"
+        android:background="@color/colorOffWhite"
+        android:orientation="vertical"
         android:paddingBottom="10dp"
-        android:background="@color/colorOffWhite">
+        android:paddingTop="10dp"
+        android:visibility="visible">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/getimagestring"
             android:layout_gravity="center_horizontal"
-            android:textSize="18dp"/>
+            android:text="@string/getimagestring"
+            android:textSize="18sp" />
 
         <LinearLayout
             android:id="@+id/getpage_source_buttons_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center_horizontal">
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal">
 
             <Button
                 android:id="@+id/getpage_gallery_button"
@@ -192,9 +124,104 @@ This button will take the user on to the Cropping fragment.
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/camera"/>
+                android:text="@string/camera" />
 
         </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/getpage_filter_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_weight="0"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:background="@color/colorOffWhite"
+        android:visibility="gone">
+
+        <Button
+            android:id="@+id/getpage_showorig_button"
+            style="@style/LightBlueButtonPill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:layout_gravity="center_vertical"
+            android:padding="5dp"
+            android:text="@string/showorig" />
+
+        <Button
+            android:id="@+id/getpage_showfilt_button"
+            style="@style/LightBlueButtonPill"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0"
+            android:layout_gravity="center_vertical"
+            android:padding="5dp"
+            android:text="@string/showfilt"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="70dp"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <com.tulipan.hunter.vesselbuilder.views.DoubleSeekBarView
+                android:id="@+id/getpage_threshold_seekbar"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                custom:minimumValue="0"
+                custom:maximumValue="255"
+                custom:stepSize="1"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_gravity="center">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/getpage_filter_lowerthresh_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="999.9"
+                        android:textColor="@color/doubleSeekbarBar"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_weight="1">
+
+                    <TextView
+                        android:id="@+id/getpage_filter_upperthresh_textview"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:text="999.9"
+                        android:textColor="@color/doubleSeekbarBar"/>
+
+                </LinearLayout>
+
+
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
 
     </LinearLayout>
 

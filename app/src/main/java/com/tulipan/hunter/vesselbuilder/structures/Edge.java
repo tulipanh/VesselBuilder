@@ -2,6 +2,8 @@ package com.tulipan.hunter.vesselbuilder.structures;
 
 import android.content.Context;
 
+import com.tulipan.hunter.vesselbuilder.EdgeManipRenderer;
+
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
@@ -20,6 +22,7 @@ public class Edge {
     public static final int TOTAL_COMPONENTS_PER_VERTEX = POSITION_COMPONENTS_PER_VERTEX + COLORBOOL_COMPONENTS_PER_VERTEX;
     public static final int POSITION_STRIDE = POSITION_COMPONENTS_PER_VERTEX * BYTES_PER_FLOAT;
     public static final int COLOR_STRIDE = COLORBOOL_COMPONENTS_PER_VERTEX * BYTES_PER_FLOAT;
+    public static final int TOTAL_STRIDE = POSITION_STRIDE + COLOR_STRIDE;
     public int numVertices;
     public float startX;
     public float startY;
@@ -28,6 +31,7 @@ public class Edge {
     private float[] vertexData;
     private float[] vertexColorData;
     private float[] transformData;
+    private float[] baselineData;
     private float translateMin;
     private float rotateMin;
     public int topTrim;
@@ -37,6 +41,7 @@ public class Edge {
 
     public FloatBuffer vertexBuffer;
     public FloatBuffer colorBuffer;
+    public FloatBuffer baselineBuffer;
 
     /**
      * To apply different color to the selected and trimmed parts of the edge, may need to
@@ -113,6 +118,7 @@ public class Edge {
         bottomTrim = numVertices / 2 - 1;
         pivotPoint[0] = vertexData[vertexData.length - POSITION_COMPONENTS_PER_VERTEX];
         pivotPoint[1] = vertexData[vertexData.length - POSITION_COMPONENTS_PER_VERTEX + 1];
+        baselineData = new float[6];
         transformData = new float[numVertices * 4];
 
         indexV = 0;
@@ -153,6 +159,13 @@ public class Edge {
             indexV += 2;
         }
         translateMin = 0.0f;
+
+        baselineData[0] = pivotPoint[0];
+        baselineData[1] = pivotPoint[1];
+        baselineData[2] = 1.0f;
+        baselineData[3] = -pivotPoint[0];
+        baselineData[4] = pivotPoint[1];
+        baselineData[5] = 1.0f;
     }
 
     private void flipAndScale() {
@@ -198,6 +211,17 @@ public class Edge {
             indexT += 4;
         }
         translateMin = 0 - minDistance;
+
+        baselineData[0] = pivotPoint[0];
+        baselineData[1] = pivotPoint[1];
+        baselineData[2] = 1.0f;
+        baselineData[3] = -pivotPoint[0];
+        baselineData[4] = pivotPoint[1];
+        baselineData[5] = 1.0f;
+    }
+
+    public void makeBaselineBuffer() {
+        baselineBuffer = ByteBuffer.allocateDirect(baselineData.length * BYTES_PER_FLOAT).order(ByteOrder.nativeOrder()).asFloatBuffer().put(baselineData);
     }
 
     public void makeVertexBuffer() {
@@ -235,6 +259,21 @@ public class Edge {
             vertexColorData[i] = (i < topTrim*2 || i > bottomTrim*2 + 1) ? 0.0f : 1.0f;
         }
         makeColorBuffer();
+    }
+
+    public void updateBaselineData(int mode, float amount) {
+        if (mode == EdgeManipRenderer.TRANSLATE) {
+            baselineData[0] += amount;
+            baselineData[3] -= amount;
+        } else if (mode == EdgeManipRenderer.TRIM) {
+            baselineData[0] = vertexData[bottomTrim*4+2];
+            baselineData[1] = vertexData[bottomTrim*4+3];
+            baselineData[3] = -baselineData[0];
+            baselineData[4] = baselineData[1];
+        } else if (mode == EdgeManipRenderer.ROTATE) {
+
+        }
+        makeBaselineBuffer();
     }
 
     public void calcTrimBounds() {
@@ -333,6 +372,7 @@ public class Edge {
         pivotPoint[0] += transDist;
         prepareTransformData();
         makeVertexBuffer();
+        makeBaselineBuffer();
     }
 
     // Angle from vertical, clockwise is positive.
@@ -354,6 +394,7 @@ public class Edge {
         }
         prepareTransformData();
         makeVertexBuffer();
+        makeBaselineBuffer();
     }
 
     public float[] exportEdgeData() {
@@ -379,6 +420,10 @@ public class Edge {
         }
 
         return vertexArray;
+    }
+
+    public float[] getPivotPoint() {
+        return pivotPoint;
     }
 }
 

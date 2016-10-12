@@ -5,11 +5,4 @@
             <solid android:color="@color/colorTriadRedDark"/>
         </shape>
     </item>
-    <item>
-        <shape android:shape="oval">
-            <stroke
-                android:width="2dp"
-                android:color="@color/colorAccent"/>
-        </shape>
-    </item>
 </layer-list>

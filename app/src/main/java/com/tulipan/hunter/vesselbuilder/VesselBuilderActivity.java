@@ -37,7 +37,7 @@ public class VesselBuilderActivity extends FragmentActivity {
         if (!OpenCVLoader.initDebug()) {
             Log.e(this.getClass().getSimpleName(), " OpenCVLoader.initDebug(), not working.");
         } else {
-            Log.d(this.getClass().getSimpleName(), " OpenCVLoader.initDevug(), working.");
+            Log.d(this.getClass().getSimpleName(), " OpenCVLoader.initDebug(), working.");
         }
     }
 

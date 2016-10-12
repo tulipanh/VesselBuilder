@@ -1,7 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="ProgressView">
-        <attr name="progressLevel" format="integer">
-        </attr>
+        <attr name="progressLevel" format="integer"/>
+    </declare-styleable>
+    <declare-styleable name="DoubleSeekBarView">
+        <attr name="minimumValue" format="integer" />
+        <attr name="maximumValue" format="integer" />
+        <attr name="stepSize" format="float" />
     </declare-styleable>
 </resources>

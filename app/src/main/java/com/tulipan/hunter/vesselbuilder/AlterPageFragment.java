@@ -17,6 +17,7 @@ import android.widget.Toast;
 
 import com.tulipan.hunter.vesselbuilder.structures.EdgeOBJ;
 import com.tulipan.hunter.vesselbuilder.structures.ImageProject;
+import com.tulipan.hunter.vesselbuilder.structures.ModelFile;
 
 /**
  * Created by Hunter on 9/2/2016.
@@ -102,7 +103,7 @@ public class AlterPageFragment extends Fragment {
                 trimLayout.setVisibility(View.VISIBLE);
                 trimActive = true;
                 mRenderer.setEditMode(EdgeManipRenderer.TRIM);
-                trimButton.setTextColor(ContextCompat.getColor(mCurrentActivity, R.color.colorAccent));
+                trimButton.setSelected(true);
             }
         });
 
@@ -113,7 +114,7 @@ public class AlterPageFragment extends Fragment {
                 rotateLayout.setVisibility(View.VISIBLE);
                 rotateActive = true;
                 mRenderer.setEditMode(EdgeManipRenderer.ROTATE);
-                rotateButton.setTextColor(ContextCompat.getColor(mCurrentActivity, R.color.colorAccent));
+                rotateButton.setSelected(true);
             }
         });
 
@@ -124,7 +125,7 @@ public class AlterPageFragment extends Fragment {
                 translateLayout.setVisibility(View.VISIBLE);
                 translateActive = true;
                 mRenderer.setEditMode(EdgeManipRenderer.TRANSLATE);
-                translateButton.setTextColor(ContextCompat.getColor(mCurrentActivity, R.color.colorAccent));
+                translateButton.setSelected(true);
             }
         });
 
@@ -132,48 +133,15 @@ public class AlterPageFragment extends Fragment {
         meshButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 saveTransformation();
-                meshButton.setTextColor(ContextCompat.getColor(mCurrentActivity, R.color.colorAccent));
-                EdgeOBJ edgeObject = new EdgeOBJ(mCurrentActivity, mRenderer.edge.exportEdgeData());
+                EdgeOBJ edgeObject = new EdgeOBJ(mCurrentActivity, mRenderer.edge.exportEdgeData(), mProject.getPhotoImage());
                 /* TODO: Coordinate EdgeOBJ with ImageProject to save OBJ file to appropriate file name */
+                ModelFile objectFile = new ModelFile(edgeObject.getFilePath());
+                mCurrentActivity.replaceFragment(ModelRendererFragment.newInstance(objectFile));
             }
         });
 
         return v;
     }
-
-    /*
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = mCurrentActivity.getMenuInflater();
-        inflater.inflate(R.menu.edge_manip_options_menu, menu);
-        return true;
-    }
-
-    public boolean onOptionsItemSelected(MenuItem item) {
-        saveTransformation();
-        switch (item.getItemId()) {
-            case R.id.trim_options:
-                trimLayout.setVisibility(View.VISIBLE);
-                trimActive = true;
-                mRenderer.setEditMode(EdgeManipRenderer.TRIM);
-                return true;
-            case R.id.rotate_options:
-                rotateLayout.setVisibility(View.VISIBLE);
-                rotateActive = true;
-                mRenderer.setEditMode(EdgeManipRenderer.ROTATE);
-                return true;
-            case R.id.translate_options:
-                translateLayout.setVisibility(View.VISIBLE);
-                translateActive = true;
-                mRenderer.setEditMode(EdgeManipRenderer.TRANSLATE);
-                return true;
-            case R.id.mesh_options:
-                EdgeOBJ edgeObject = new EdgeOBJ(mCurrentActivity, mRenderer.edge.exportEdgeData());
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-    */
 
     private void saveTransformation() {
         if (trimActive) {
@@ -195,14 +163,9 @@ public class AlterPageFragment extends Fragment {
             translateLayout.setVisibility(View.GONE);
             translateActive = false;
         }
-        resetButtonsColor();
-    }
-
-    private void resetButtonsColor() {
-        trimButton.setTextColor(ContextCompat.getColor(mCurrentActivity, R.color.colorPrimary));
-        rotateButton.setTextColor(ContextCompat.getColor(mCurrentActivity, R.color.colorPrimary));
-        translateButton.setTextColor(ContextCompat.getColor(mCurrentActivity, R.color.colorPrimary));
-        meshButton.setTextColor(ContextCompat.getColor(mCurrentActivity, R.color.colorPrimary));
+        trimButton.setSelected(false);
+        rotateButton.setSelected(false);
+        translateButton.setSelected(false);
     }
 
     public void requestRender() {

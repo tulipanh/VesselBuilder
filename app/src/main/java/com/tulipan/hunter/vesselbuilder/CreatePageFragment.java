@@ -1,6 +1,7 @@
 package com.tulipan.hunter.vesselbuilder;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -14,8 +15,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.tulipan.hunter.vesselbuilder.structures.ImageProject;
+import com.tulipan.hunter.vesselbuilder.views.DoubleSeekBarView;
 
 import java.io.File;
 
@@ -75,6 +79,7 @@ public class CreatePageFragment extends Fragment {
 
         if (requestCode == REQUEST_IMAGE_CAPTURE) {
             updatePhotoView(mProject.getPhotoFile());
+
         }
     }
 
@@ -83,7 +88,6 @@ public class CreatePageFragment extends Fragment {
         Uri uri = Uri.fromFile(mProject.getPhotoFile());
         captureImage.putExtra(MediaStore.EXTRA_OUTPUT, uri);
         startActivityForResult(captureImage, REQUEST_IMAGE_CAPTURE);
-        updatePhotoView(mProject.getPhotoFile());
     }
 
     private boolean canTakePhoto() {
@@ -94,52 +98,93 @@ public class CreatePageFragment extends Fragment {
 
     private class CreateInterface implements View.OnClickListener {
         private View mView;
-        private Button getButton;
-        private Button filterButton;
+
+        private LinearLayout getOptionsLayout;
         private Button acceptButton;
-        private Button resetButton;
+        private Button rejectButton;
+        private Button rotateButton;
+        private Button reflectButton;
 
         private LinearLayout getLayout;
         private Button galleryButton;
         private Button cameraButton;
 
+        private LinearLayout filterOptionsLayout;
+        private Button resetButton;
+        private DoubleSeekBarView thresholdSeekbar;
+        private TextView lowerTextView;
+        private TextView upperTextView;
+        //private Button moreButton;
+        //private Button lessButton;
+
         private LinearLayout filterLayout;
-        private Button lowerMinusButton;
-        private Button lowerPlusButton;
-        private Button upperMinusButton;
-        private Button upperPlusButton;
+        private Button showOrigButton;
+        private Button showFiltButton;
+        private Button continueButton;
 
         public CreateInterface(View view) {
             mView = view;
 
-            getButton = (Button) mView.findViewById(R.id.getpage_get_button);
-            filterButton = (Button) mView.findViewById(R.id.getpage_filter_button);
+            getOptionsLayout = (LinearLayout) mView.findViewById(R.id.getpage_normal_buttons_layout);
             acceptButton = (Button) mView.findViewById(R.id.getpage_accept_button);
-            resetButton = (Button) mView.findViewById(R.id.getpage_reset_button);
+            rejectButton = (Button) mView.findViewById(R.id.getpage_reject_button);
+            rotateButton = (Button) mView.findViewById(R.id.getpage_rotate_button);
+            reflectButton = (Button) mView.findViewById(R.id.getpage_reflect_button);
 
             getLayout = (LinearLayout) mView.findViewById(R.id.getpage_get_layout);
             galleryButton = (Button) mView.findViewById(R.id.getpage_gallery_button);
             cameraButton = (Button) mView.findViewById(R.id.getpage_camera_button);
 
-            filterLayout = (LinearLayout) mView.findViewById(R.id.getpage_filter_layout);
-            lowerMinusButton = (Button) mView.findViewById(R.id.getpage_lower_minus_button);
-            lowerPlusButton = (Button) mView.findViewById(R.id.getpage_lower_plus_button);
-            upperMinusButton = (Button) mView.findViewById(R.id.getpage_upper_minus_button);
-            upperPlusButton = (Button) mView.findViewById(R.id.getpage_upper_plus_button);
+            filterOptionsLayout = (LinearLayout) mView.findViewById(R.id.getpage_filter_buttons_layout);
+            resetButton = (Button) mView.findViewById(R.id.getpage_reset_button);
+            thresholdSeekbar = (DoubleSeekBarView) mView.findViewById(R.id.getpage_threshold_seekbar);
+            lowerTextView = (TextView) mView.findViewById(R.id.getpage_filter_lowerthresh_textview);
+            upperTextView = (TextView) mView.findViewById(R.id.getpage_filter_upperthresh_textview);
+            //moreButton = (Button) mView.findViewById(R.id.getpage_moresense_button);
+            //lessButton = (Button) mView.findViewById(R.id.getpage_lesssense_button);
 
-            getButton.setOnClickListener(this);
-            filterButton.setOnClickListener(this);
+            filterLayout = (LinearLayout) mView.findViewById(R.id.getpage_filter_layout);
+            showOrigButton = (Button) mView.findViewById(R.id.getpage_showorig_button);
+            showFiltButton = (Button) mView.findViewById(R.id.getpage_showfilt_button);
+            continueButton = (Button) mView.findViewById(R.id.getpage_continue_button);
+
             acceptButton.setOnClickListener(this);
-            resetButton.setOnClickListener(this);
+            rejectButton.setOnClickListener(this);
+            rotateButton.setOnClickListener(this);
+            reflectButton.setOnClickListener(this);
             galleryButton.setOnClickListener(this);
             cameraButton.setOnClickListener(this);
-            lowerMinusButton.setOnClickListener(this);
-            lowerPlusButton.setOnClickListener(this);
-            upperMinusButton.setOnClickListener(this);
-            upperPlusButton.setOnClickListener(this);
+            resetButton.setOnClickListener(this);
+            //moreButton.setOnClickListener(this);
+            //lessButton.setOnClickListener(this);
+            showOrigButton.setOnClickListener(this);
+            showFiltButton.setOnClickListener(this);
+            continueButton.setOnClickListener(this);
 
-            filterButton.setEnabled(false);
+            thresholdSeekbar.setActionExecutor(new DoubleSeekBarView.ActionExecutor() {
+                @Override
+                public void touchUp() {
+                    thresholdSeekbar.setTouchable(false);
+                    mProject.setUpperThreshold(thresholdSeekbar.getUpperValue());
+                    mProject.setLowerThreshold(thresholdSeekbar.getLowerValue());
+                    mProject.applyFilter();
+                    mProject.writeFilterToFile();
+                    updatePhotoView(mProject.getFilterFile());
+                    thresholdSeekbar.setTouchable(true);
+                }
+
+                @Override
+                public void touchMove() {
+                    /* Perhaps alter some TextView displaying the threshold values. */
+                    lowerTextView.setText(String.valueOf(thresholdSeekbar.getLowerValue()));
+                    upperTextView.setText(String.valueOf(thresholdSeekbar.getUpperValue()));
+                }
+            });
+
             acceptButton.setEnabled(false);
+            rejectButton.setEnabled(false);
+            rotateButton.setEnabled(false);
+            reflectButton.setEnabled(false);
             galleryButton.setEnabled(false);
             galleryButton.setAlpha(0.3f);
 
@@ -152,37 +197,52 @@ public class CreatePageFragment extends Fragment {
         @Override
         public void onClick(View v) {
             switch (v.getId()) {
-                case R.id.getpage_get_button:
-                    filterLayout.setVisibility(View.GONE);
-                    getLayout.setVisibility(View.VISIBLE);
-                    break;
-
-                case R.id.getpage_filter_button:
-                    if (mProject.filterChanged()) {
-                        mProject.applyFilter();
-                        mProject.writeFilterToFile();
-                    }
+                case R.id.getpage_accept_button:
+                    thresholdSeekbar.setTouchable(false);
+                    mProject.setAutoThreshold();
+                    mProject.applyFilter();
+                    mProject.writeFilterToFile();
                     updatePhotoView(mProject.getFilterFile());
                     getLayout.setVisibility(View.GONE);
+                    getOptionsLayout.setVisibility(View.GONE);
                     filterLayout.setVisibility(View.VISIBLE);
+                    filterOptionsLayout.setVisibility(View.VISIBLE);
+                    thresholdSeekbar.setUpperValue(mProject.getUpperThreshold());
+                    thresholdSeekbar.setLowerValue(mProject.getLowerThreshold());
+                    lowerTextView.setText(String.valueOf(thresholdSeekbar.getLowerValue()));
+                    upperTextView.setText(String.valueOf(thresholdSeekbar.getUpperValue()));
+                    thresholdSeekbar.setTouchable(true);
+                    break;
+
+                case R.id.getpage_reject_button:
+                    mImageView.setImageBitmap(null);
+                    mProject.getPhotoFile().delete();
+                    acceptButton.setEnabled(false);
+                    rejectButton.setEnabled(false);
+                    rotateButton.setEnabled(false);
+                    reflectButton.setEnabled(false);
+                    break;
+
+                case R.id.getpage_rotate_button:
+                    /* TODO: This should rotate the image 90 degrees clockwise (i.e. from landscape to portrait) */
+                    mProject.rotateImage();
+                    updatePhotoView(mProject.getPhotoFile());
                     acceptButton.setEnabled(true);
+                    rejectButton.setEnabled(true);
+                    rotateButton.setEnabled(true);
+                    reflectButton.setEnabled(true);
                     break;
 
-                case R.id.getpage_accept_button:
-                    /* TODO: This should pass the ImageProject to a new CropPageFragment */
-                    /* It should only become available after a filter has been applied to an image. */
-                    mCurrentActivity.replaceFragment(CropPageFragment.newInstance(mProject));
+                case R.id.getpage_reflect_button:
+                    /* TODO: THis should reflect the image across the vertical axis */
+                    mProject.reflectImage();
+                    updatePhotoView(mProject.getPhotoFile());
+                    acceptButton.setEnabled(true);
+                    rejectButton.setEnabled(true);
+                    rotateButton.setEnabled(true);
+                    reflectButton.setEnabled(true);
                     break;
 
-                case R.id.getpage_reset_button:
-                    /* TODO: This should reset the current CreatePageFragment to its initial state. */
-                    /* It should do this either by deleting the current ImageProject and creating a new one
-                        or by calling some kind of reset method of the current ImageProject. It should also
-                        reset the page's interface somehow. Either by reverting the state of the current
-                        interface or by simply popping off the current CreatePageFragment and loading a
-                        new one.
-                     */
-                    break;
 
                 case R.id.getpage_gallery_button:
                     /* TODO: This should allow the user to select a picture from their Gallery app. */
@@ -193,35 +253,70 @@ public class CreatePageFragment extends Fragment {
 
                 case R.id.getpage_camera_button:
                     getCameraImage();
-                    filterButton.setEnabled(true);
+                    updatePhotoView(mProject.getPhotoFile());
+                    acceptButton.setEnabled(true);
+                    rejectButton.setEnabled(true);
+                    rotateButton.setEnabled(true);
+                    reflectButton.setEnabled(true);
                     break;
 
-                case R.id.getpage_lower_minus_button:
-                    /* TODO: This should decrease the lower threshold of the canny edge-detection and display the new filtered image. */
-                    mProject.setLowerThreshold(mProject.getLowerThreshold() - 5);
-                    mProject.applyFilter();
-                    updatePhotoView(mProject.getFilterImage());
+                case R.id.getpage_reset_button:
+                    /* TODO: This should reset the current CreatePageFragment to its initial state. */
+                    /* It should do this either by deleting the current ImageProject and creating a new one
+                        or by calling some kind of reset method of the current ImageProject. It should also
+                        reset the page's interface somehow. Either by reverting the state of the current
+                        interface or by simply popping off the current CreatePageFragment and loading a
+                        new one.
+                     */
+                    mProject.deallocate();
+                    mProject = new ImageProject(mCurrentActivity);
+                    mImageView.setImageBitmap(null);
+                    filterLayout.setVisibility(View.GONE);
+                    filterOptionsLayout.setVisibility(View.GONE);
+                    getLayout.setVisibility(View.VISIBLE);
+                    getOptionsLayout.setVisibility(View.VISIBLE);
+                    acceptButton.setEnabled(false);
+                    rejectButton.setEnabled(false);
+                    rotateButton.setEnabled(false);
+                    reflectButton.setEnabled(false);
                     break;
 
-                case R.id.getpage_lower_plus_button:
-                    /* TODO: This should increase the lower threshold of the canny edge-detection and display the new filtered image. */
-                    mProject.setLowerThreshold(mProject.getLowerThreshold() + 5);
+                /*
+                case R.id.getpage_moresense_button:
+                    if (!mProject.changeUpperThreshold(-0.2f)) {
+                        Toast.makeText(mCurrentActivity, "Lower Limit Reached", Toast.LENGTH_SHORT).show();
+                    }
                     mProject.applyFilter();
-                    updatePhotoView(mProject.getFilterImage());
+                    mProject.writeFilterToFile();
+                    updatePhotoView(mProject.getFilterFile());
                     break;
 
-                case R.id.getpage_upper_minus_button:
-                    /* TODO: This should decrease the upper threshold of the canny edge-detection and display the new filtered image. */
-                    mProject.setLowerThreshold(mProject.getUpperThreshold() - 5);
+                case R.id.getpage_lesssense_button:
+                    if (!mProject.changeUpperThreshold(0.2f)) {
+                        Toast.makeText(mCurrentActivity, "Upper Limit Reached", Toast.LENGTH_SHORT).show();
+                    }
                     mProject.applyFilter();
-                    updatePhotoView(mProject.getFilterImage());
+                    mProject.writeFilterToFile();
+                    updatePhotoView(mProject.getFilterFile());
+                    break;
+                */
+                case R.id.getpage_showorig_button:
+                    updatePhotoView(mProject.getPhotoFile());
+                    showOrigButton.setVisibility(View.GONE);
+                    showFiltButton.setVisibility(View.VISIBLE);
                     break;
 
-                case R.id.getpage_upper_plus_button:
-                    /* TODO: This should increase the upper threshold of the canny edge-detection and display the new filtered image. */
-                    mProject.setLowerThreshold(mProject.getUpperThreshold() + 5);
-                    mProject.applyFilter();
-                    updatePhotoView(mProject.getFilterImage());
+                case R.id.getpage_showfilt_button:
+                    updatePhotoView(mProject.getFilterFile());
+                    showFiltButton.setVisibility(View.GONE);
+                    showOrigButton.setVisibility(View.VISIBLE);
+                    break;
+
+                case R.id.getpage_continue_button:
+                    mCurrentActivity.replaceFragment(CropPageFragment.newInstance(mProject));
+                    break;
+
+                default:
                     break;
             }
         }

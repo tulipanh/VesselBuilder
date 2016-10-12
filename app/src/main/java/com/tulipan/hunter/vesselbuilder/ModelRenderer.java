@@ -125,12 +125,12 @@ public class ModelRenderer implements GLSurfaceView.Renderer{
         glUniform3f(uVectorToLightLocation, 0.5773503f, 0.5773503f, 0.5773503f);
 
         mObjectModel.vertexBuffer.position(0);
-        glVertexAttribPointer(aPositionLocation, mObjectModel.POSITION_COMPONENTS_PER_VERTEX, GL_FLOAT, false, mObjectModel.STRIDE, mObjectModel.vertexBuffer);
+        glVertexAttribPointer(aPositionLocation, OBJModel.POSITION_COMPONENTS_PER_VERTEX, GL_FLOAT, false, OBJModel.STRIDE, mObjectModel.vertexBuffer);
         glEnableVertexAttribArray(aPositionLocation);
         mObjectModel.vertexBuffer.position(0);
 
-        mObjectModel.vertexBuffer.position(mObjectModel.POSITION_COMPONENTS_PER_VERTEX);
-        glVertexAttribPointer(aNormalLocation, mObjectModel.NORMAL_COMPONENTS_PER_VERTEX, GL_FLOAT, false, mObjectModel.STRIDE, mObjectModel.vertexBuffer);
+        mObjectModel.vertexBuffer.position(OBJModel.POSITION_COMPONENTS_PER_VERTEX);
+        glVertexAttribPointer(aNormalLocation, OBJModel.NORMAL_COMPONENTS_PER_VERTEX, GL_FLOAT, false, OBJModel.STRIDE, mObjectModel.vertexBuffer);
         glEnableVertexAttribArray(aNormalLocation);
         mObjectModel.vertexBuffer.position(0);
 
@@ -148,7 +148,7 @@ public class ModelRenderer implements GLSurfaceView.Renderer{
 
     public boolean zoomIn(float percent) {
         if (percent > 1f) return false;
-        if ((mCameraDist * (1f - percent)) < mObjectModel.getRadius()) return false;
+        if ((mCameraDist * (1f - percent)) < (0.3*mObjectModel.getRadius())) return false;
 
         mCameraDist = mCameraDist * (1f - percent);
         setCamera();
